@@ -17,6 +17,8 @@ pip-wheel-metadata/
 .venv/
 venv/
 env/
+.env
+.env.*
 
 # Test and coverage artifacts
 .pytest_cache/
@@ -29,6 +31,11 @@ htmlcov/
 
 # Logs and local runtime files
 *.log
+
+# Type/lint caches
+.mypy_cache/
+.ruff_cache/
+.pyre/
 
 # Editor and OS files
 .DS_Store
