@@ -1,0 +1,54 @@
+experiment:
+  name: "routing_phase2_hyperparams"
+  checkpoint_root: "checkpoints/experiments"
+
+  base_train_cfg: "configs/train.yaml"
+  base_model_cfg: "configs/model.yaml"
+  base_data_cfg: "configs/data.yaml"
+
+  device: "auto"
+  continue_on_error: true
+  skip_existing: true
+  seeds: [42, 3407, 2026]
+
+  # Phase-2: keep objective fixed (multi-station mean), analyze hyperparameters.
+  losses:
+    - name: "mean_kge"
+      eps: 1.0e-6
+
+  train_overrides:
+    trainer:
+      plot_train_curve: true
+      post_train_simulate: true
+      post_train_splits: ["calibrate", "verify"]
+      post_train_plot: true
+
+  model_overrides: {}
+
+  # Replace variants below with top structures from Phase-1 report.
+  # Keep architecture fixed here and mainly vary windowsize/khop.
+  search:
+    windowsize: [16, 24, 32, 48]
+    khop: [2, 3, 4]
+    variants:
+      - id: "gr2n_gat_attn_slope"
+        model:
+          name: "gr2n"
+          input_projector: "slope"
+          spatial: "gat"
+          temporal: "attention"
+
+      - id: "gr2n_seq2seq_gcn_attn_slope"
+        model:
+          name: "gr2n_seq2seq"
+          input_projector: "slope"
+          spatial: "gcn"
+          temporal: "attention"
+
+  # Stage-2 selection: screen with one seed, then rerun top settings with all seeds.
+  staged:
+    enabled: true
+    screen_seed: 42
+    top_k_per_loss: 4
+    ranking_metric: "verify_kge_denorm"
+

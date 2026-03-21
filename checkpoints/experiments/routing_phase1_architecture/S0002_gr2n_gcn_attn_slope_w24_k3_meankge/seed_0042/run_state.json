@@ -1,0 +1,19 @@
+{
+  "state": "running",
+  "setting_id": "S0002_gr2n_gcn_attn_slope_w24_k3_meankge",
+  "seed": 42,
+  "execution": "running",
+  "command": [
+    "D:\\software\\Miniconda\\envs\\pytorch_env\\python.exe",
+    "scripts\\train.py",
+    "--train-cfg",
+    "F:\\research\\Research\\Routing\\code\\checkpoints\\experiments\\routing_phase1_architecture\\S0002_gr2n_gcn_attn_slope_w24_k3_meankge\\seed_0042\\configs\\train.yaml",
+    "--model-cfg",
+    "F:\\research\\Research\\Routing\\code\\checkpoints\\experiments\\routing_phase1_architecture\\S0002_gr2n_gcn_attn_slope_w24_k3_meankge\\seed_0042\\configs\\model.yaml",
+    "--data-cfg",
+    "F:\\research\\Research\\Routing\\code\\checkpoints\\experiments\\routing_phase1_architecture\\S0002_gr2n_gcn_attn_slope_w24_k3_meankge\\seed_0042\\configs\\data.yaml",
+    "--device",
+    "auto"
+  ],
+  "updated_at": "2026-03-21 22:05:00"
+}

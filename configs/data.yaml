@@ -1,8 +1,15 @@
 time:
+  # Full available period in raw files (for reference/documentation).
   full_period:
     start: "2003-01-01 00:00:00"
     end: "2018-12-31 21:00:00"
 
+  # Splits used by RoutingDataset.
+  # Mapping in code:
+  # - train/calibrate -> calibrate
+  # - val/test/verify -> verify
+  # - warmup          -> warmup
+  # - full/all        -> full (ignores split window)
   split:
     warmup:
       start: "2003-01-01 00:00:00"
@@ -16,6 +23,7 @@ time:
       start: "2015-01-01 00:00:00"
       end: "2018-12-31 21:00:00"
 
+  # Metadata only (not currently used to resample in code).
   freq:
     input: "1D"
     evaluate: "1D"

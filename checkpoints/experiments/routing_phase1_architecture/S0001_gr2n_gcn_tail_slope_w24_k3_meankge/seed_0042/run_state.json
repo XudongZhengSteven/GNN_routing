@@ -1,0 +1,12 @@
+{
+  "state": "success",
+  "setting_id": "S0001_gr2n_gcn_tail_slope_w24_k3_meankge",
+  "seed": 42,
+  "execution": "finished",
+  "status": "success",
+  "return_code": 0,
+  "best_epoch": 4.0,
+  "best_metric": 0.8312094807624817,
+  "verify_kge_denorm": 0.8213679194450378,
+  "updated_at": "2026-03-21 22:05:00"
+}

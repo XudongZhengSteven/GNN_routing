@@ -1,0 +1,7 @@
+{
+  "config_path": "F:\\research\\Research\\Routing\\code\\configs\\experiments\\phase3_objective.yaml",
+  "base_train_cfg": "F:\\research\\Research\\Routing\\code\\configs\\train.yaml",
+  "base_model_cfg": "F:\\research\\Research\\Routing\\code\\configs\\model.yaml",
+  "base_data_cfg": "F:\\research\\Research\\Routing\\code\\configs\\data.yaml",
+  "total_settings": 2
+}

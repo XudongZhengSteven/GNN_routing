@@ -1,0 +1,133 @@
+graph:
+  # River-network graph threshold used to select/build threshold_<x> graph files.
+  rivernetwork_threshold: "4"
+
+# Optional dataset overrides.
+# Priority: configs/model.yaml:dataset > configs/train.yaml:dataset
+dataset:
+  windowsize: 16
+  input_freq_per_day: 1
+  n_pred: 1
+  khop: 3
+  predict_current: 1
+  self_loop: false
+  dataset_type: "train"
+  data_home: "data/raw/case5"
+  data_cfg_path: "configs/data.yaml"
+  model_cfg_path: "configs/model.yaml"
+  # Optional: force scenario instead of auto-infer from dataset_type.
+  # scenario: "cali0"
+
+model:
+  # Main model names:
+  # - gr2n         -> GR2N (direct multi-horizon)
+  # - gr2n_seq2seq -> GR2NSeq2Seq (encoder-decoder)
+  # - routing_baseline -> baseline GRU model
+  # Compatibility aliases still supported in code.
+  name: "gr2n"
+
+  # Core architecture
+  hidden_dim: 64
+  num_layers: 2
+  dropout: 0.1
+  pos_hidden_dim: 32
+  use_film_lag: true
+
+  # Input / feature dims (normally inferred from dataset, can be overridden).
+  input_dim: 2
+  node_attr_dim: 3
+  edge_attr_dim: 4
+  # Optional explicit dims; if omitted, inferred from dataset.
+  # pred_len: 1
+  # num_nodes: 249
+  # seq_len: 16
+  # input_freq_per_day: 1
+
+  # Input projector:
+  # - "slope" -> SlopeRouting (FiLM-GRU lag module)
+  # - "mlp"   -> LinearMLPProjector
+  input_projector: "slope"
+  # Optional nested example (recommended for variant experiments):
+  # input_projector:
+  #   name: "mlp"
+  #   dropout: 0.1
+  # Optional extra kwargs merged into projector config:
+  # input_projector_kwargs:
+  #   dropout: 0.1
+
+  # Spatial model:
+  # - "gcn": custom GraphConvPosEnc
+  # - "gat": GraphAttentionPosEnc
+  spatial: "gcn"
+  # Optional nested example:
+  # spatial:
+  #   name: "gat"
+  #   use_dynamic_edge_weight: true
+  #   normalize_by_in_degree: true
+  #   edge_weight_max: 5.0
+  #   gat_num_heads: 2
+  #   gat_attn_dropout: 0.1
+  #   gat_negative_slope: 0.2
+  # Optional extra kwargs merged into spatial config:
+  # spatial_layer_kwargs:
+  #   normalize_by_in_degree: true
+
+  # GCN edge-weight mode:
+  # - "dynamic" -> dynamic edge reweighting in GCN
+  # - "static"  -> static edge weights in GCN
+  # Note: when spatial="gat", attention coefficients are the edge weights
+  # and this switch is ignored.
+  edge_weight_mode: "dynamic"
+
+  # Spatial stability / normalization (flat shortcuts, merged into spatial kwargs)
+  in_degree_norm: true
+  edge_weight_max: 5.0
+  edge_dropout: 0.0
+  message_dropout: 0.0
+
+  # GAT flat shortcuts (merged into spatial kwargs)
+  heads: 1
+  attn_dropout: 0.0
+  attn_negative_slope: 0.2
+
+  # Temporal module:
+  # - "tail_mean": baseline readout on tail steps
+  # - "attention": temporal attention
+  #   * GR2N: temporal readout attention over hidden sequence
+  #   * GR2NSeq2Seq: decoder cross-temporal attention to encoder outputs
+  temporal: "tail_mean"
+  # Optional nested example:
+  # temporal:
+  #   name: "attention"
+  #   attn_use_tail_window: true
+  #   attn_tail_steps: 8
+  #   attn_dropout: 0.0
+  #   attn_temperature: 1.0
+  # Optional extra kwargs merged into temporal config:
+  # temporal_readout_kwargs:
+  #   attn_use_tail_window: true
+
+  # Temporal block (GraphGRU stack) options:
+  # - cell_norm_type: none / layernorm / rmsnorm / batchnorm
+  # - use_layer_residual: add residual connection across stacked GRU layers
+  # - layer_residual_dropout: dropout on residual branch
+  temporal_block:
+    cell_norm_type: "none"
+    cell_norm_eps: 1.0e-5
+    cell_norm_affine: true
+    cell_batchnorm_momentum: 0.1
+    use_layer_residual: false
+    layer_residual_dropout: 0.0
+
+  # Optional extra kwargs merged into temporal block config:
+  # temporal_block_kwargs:
+  #   use_layer_residual: true
+
+  # Backward-compatibility keys still supported by parser:
+  # use_slope_routing, spatial_model_type, spatial_use_dynamic_edge_weight,
+  # spatial_normalize_by_in_degree, spatial_edge_weight_max,
+  # gat_num_heads, gat_attn_dropout, gat_negative_slope,
+  # temporal_readout_type, temporal_attn_dropout, time_attn_dropout,
+  # attn_use_tail_window, attn_temperature, attn_tail_steps, temporal_attn_tail_steps,
+  # spatial_edge_dropout, spatial_message_dropout, use_layer_residual,
+  # layer_residual_dropout, cell_norm_type, cell_norm_eps, cell_norm_affine, cell_batchnorm_momentum.

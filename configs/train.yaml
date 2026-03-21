@@ -1,0 +1,128 @@
+seed: 42
+device: "auto"   # auto / cpu / cuda:0 ...
+
+reproducibility:
+  deterministic: false
+  # null -> inferred as (not deterministic)
+  cudnn_benchmark:
+
+# Dataset fallback values.
+# Priority at runtime:
+# configs/model.yaml:dataset > configs/train.yaml:dataset
+dataset:
+  windowsize: 16
+  input_freq_per_day: 1
+  n_pred: 1
+  khop: 3
+  predict_current: 1
+  self_loop: false
+  dataset_type: "train"
+  data_home: "data/raw/case5"
+  data_cfg_path: "configs/data.yaml"
+  model_cfg_path: "configs/model.yaml"
+  # Optional: force scenario
+  # scenario: "cali0"
+
+dataloader:
+  train:
+    batch_size: 8
+    shuffle: true
+    num_workers: 0
+    pin_memory: false
+    drop_last: false
+    use_balance_sampler: false
+  val:
+    batch_size: 8
+    shuffle: false
+    num_workers: 0
+    pin_memory: false
+    drop_last: false
+    use_balance_sampler: false
+
+# Optional model overrides.
+# Recommended: keep structure params in configs/model.yaml:model.
+model: {}
+
+loss:
+  # Options:
+  # - mse / mae / huber
+  # - mse_kge
+  # - mean_kge
+  # - single_station_kge
+  name: "mean_kge"
+  # huber:
+  # beta: 1.0
+  # mse_kge:
+  # lambda_mse: 1.0
+  # lambda_kge: 0.2
+  # eps: 1.0e-6
+  # mean_kge:
+  # eps: 1.0e-6
+  # single_station_kge:
+  # eps: 1.0e-6
+  # station_name: "Shiquan"   # preferred
+  # station_index: 0           # optional alternative
+
+optimizer:
+  # Options: adam / adamw / sgd
+  name: "adamw"
+  lr: 0.001
+  weight_decay: 0.0001
+  # adam/adamw only:
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  # sgd only:
+  momentum: 0.9
+  nesterov: false
+
+scheduler:
+  # Options: none / plateau / step / cosine / onecycle
+  name: "plateau"
+
+  # plateau:
+  mode: "max"       # min/max
+  factor: 0.5
+  patience: 3
+  threshold: 1.0e-4
+  min_lr: 1.0e-6
+
+  # step:
+  step_size: 10
+  gamma: 0.5
+
+  # cosine:
+  t_max: 50
+
+  # onecycle:
+  max_lr: 0.001
+  pct_start: 0.3
+  div_factor: 25.0
+  final_div_factor: 10000.0
+
+trainer:
+  epochs: 50
+  use_amp: false
+  amp_dtype: "float16"   # float16 / bfloat16
+  grad_clip_norm: 1.0
+  log_interval: 50
+
+  # Monitoring / early stop
+  monitor: "val_kge_denorm"
+  monitor_mode: "max"    # min / max
+  early_stopping_patience: 8
+
+  # Checkpointing
+  checkpoint_dir: "checkpoints/gr2n"
+  keep_last_k: 3
+  resume_path:
+
+  # Training curve plot
+  plot_train_curve: true
+  plot_train_curve_file: "objective_vs_epoch.png"
+
+  # Optional post-train simulation/evaluation
+  post_train_simulate: true
+  post_train_splits: ["calibrate", "verify"]
+  post_train_plot: true
+  post_train_batch_size: 128
+  post_train_save_dir: "post_train_simulation"

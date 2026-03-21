@@ -1,0 +1,19 @@
+{
+  "config_path": "F:\\research\\Research\\Routing\\code\\configs\\experiments\\phase1_architecture.yaml",
+  "base_train_cfg": "F:\\research\\Research\\Routing\\code\\configs\\train.yaml",
+  "base_model_cfg": "F:\\research\\Research\\Routing\\code\\configs\\model.yaml",
+  "base_data_cfg": "F:\\research\\Research\\Routing\\code\\configs\\data.yaml",
+  "total_settings": 6,
+  "seeds": [
+    42,
+    3407,
+    2026
+  ],
+  "mode": "staged",
+  "staged": {
+    "enabled": true,
+    "screen_seed": 42,
+    "top_k_per_loss": 2,
+    "ranking_metric": "verify_kge_denorm"
+  }
+}

@@ -1,0 +1,50 @@
+experiment:
+  name: "routing_phase3_objective"
+  checkpoint_root: "checkpoints/experiments"
+
+  base_train_cfg: "configs/train.yaml"
+  base_model_cfg: "configs/model.yaml"
+  base_data_cfg: "configs/data.yaml"
+
+  device: "auto"
+  continue_on_error: true
+  skip_existing: true
+  # More seeds for robust objective-function comparison.
+  seeds: [42, 3407, 2026, 7, 99]
+
+  # Phase-3: compare objective functions after structure/hyperparam are fixed.
+  losses:
+    - name: "mean_kge"
+      eps: 1.0e-6
+    - name: "single_station_kge"
+      station_name: "Shiquan"
+      eps: 1.0e-6
+
+  train_overrides:
+    trainer:
+      plot_train_curve: true
+      post_train_simulate: true
+      post_train_splits: ["calibrate", "verify"]
+      post_train_plot: true
+
+  model_overrides: {}
+
+  # Fill this with the best structure + hyperparameters from Phase-2.
+  # Keep search space minimal to isolate objective-function impact.
+  search:
+    windowsize: [24]
+    khop: [3]
+    variants:
+      - id: "best_model_from_phase2"
+        model:
+          name: "gr2n"
+          input_projector: "slope"
+          spatial: "gat"
+          temporal: "attention"
+
+  staged:
+    enabled: false
+    screen_seed: 42
+    top_k_per_loss: 1
+    ranking_metric: "verify_kge_denorm"
+

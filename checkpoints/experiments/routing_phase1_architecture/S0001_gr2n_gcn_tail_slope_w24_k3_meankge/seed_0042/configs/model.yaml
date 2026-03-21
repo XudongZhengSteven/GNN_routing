@@ -1,0 +1,41 @@
+graph:
+  rivernetwork_threshold: '4'
+dataset:
+  windowsize: 24
+  input_freq_per_day: 1
+  n_pred: 1
+  khop: 3
+  predict_current: 1
+  self_loop: false
+  dataset_type: train
+  data_home: data/raw/case5
+  data_cfg_path: configs/data.yaml
+  model_cfg_path: configs/model.yaml
+model:
+  name: gr2n
+  hidden_dim: 64
+  num_layers: 2
+  dropout: 0.1
+  pos_hidden_dim: 32
+  use_film_lag: true
+  input_dim: 2
+  node_attr_dim: 3
+  edge_attr_dim: 4
+  input_projector: slope
+  spatial: gcn
+  edge_weight_mode: dynamic
+  in_degree_norm: true
+  edge_weight_max: 5.0
+  edge_dropout: 0.0
+  message_dropout: 0.0
+  heads: 1
+  attn_dropout: 0.0
+  attn_negative_slope: 0.2
+  temporal: tail_mean
+  temporal_block:
+    cell_norm_type: none
+    cell_norm_eps: 1.0e-05
+    cell_norm_affine: true
+    cell_batchnorm_momentum: 0.1
+    use_layer_residual: false
+    layer_residual_dropout: 0.0
